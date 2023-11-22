@@ -16,10 +16,10 @@ jobs:
           name: Build and push Docker image
           command: |
             cd ~/app
-            docker build -t $HEROKU_REGISTRY_USER/strrange:latest .
+            docker build -t registry.heroku.com/strrange/web:latest .
             docker login -u $HEROKU_REGISTRY_USER -p $HEROKU_API_KEY registry.heroku.com
-            docker tag $HEROKU_REGISTRY_USER/strrange:latest registry.heroku.com/strrange/web
             docker push registry.heroku.com/strrange/web
+
 
       - deploy:
           name: Deploy to Heroku

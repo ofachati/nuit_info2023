@@ -3,16 +3,19 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: circleci/python:3.9  # Update to Python 3.9
-
-    working_directory: /app
+      - image: circleci/python:3.9
 
     steps:
       - checkout
 
       - run:
+          name: Create working directory
+          command: mkdir -p ~/app
+
+      - run:
           name: Build and push Docker image
           command: |
+            cd ~/app
             docker build -t $HEROKU_REGISTRY_USER/strrange .
             docker login -u $HEROKU_REGISTRY_USER -p $HEROKU_API_KEY registry.heroku.com
             docker tag $HEROKU_REGISTRY_USER/strrange registry.heroku.com/strrange/web
@@ -22,4 +25,4 @@ jobs:
           name: Deploy to Heroku
           command: |
             curl https://cli-assets.heroku.com/install.sh | sh
-            heroku container:release web -a strrange  # Use the actual Heroku app name
+            heroku container:release web -a strrange

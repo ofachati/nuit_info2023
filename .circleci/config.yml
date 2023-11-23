@@ -27,12 +27,6 @@ jobs:
           name: Install Backend Dependencies
           command: |
             cd Backend
-
-            # Install pip for Python 3 using sudo
-            sudo apt-get update
-            sudo apt-get install -y python3-pip
-
-            # Now, install the requirements
             pip3 install -r requirements.txt
 
   deploy:
@@ -41,6 +35,12 @@ jobs:
 
     steps:
       - checkout
+
+      - run:
+          name: Install Docker
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y docker.io
 
       - run:
           name: Install Heroku CLI
@@ -60,7 +60,7 @@ jobs:
             heroku container:login
             heroku container:push web -a strangeback
             heroku container:release web -a strangeback
-            
+
 workflows:
   build-and-deploy:
     jobs:
@@ -68,3 +68,4 @@ workflows:
       - deploy:
           requires:
             - build
+

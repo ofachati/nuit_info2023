@@ -27,6 +27,11 @@ jobs:
           name: Install Backend Dependencies
           command: |
             cd Backend
+
+            # Add this line to export the PATH with the location of pip
+            export PATH=$PATH:/usr/local/bin
+
+            # Now, install the requirements
             pip install -r requirements.txt
 
   deploy:

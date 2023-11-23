@@ -42,27 +42,12 @@ jobs:
     steps:
       - checkout
 
-      - run:
-          name: Deploy Frontend to Heroku
-          command: |
-            echo "$HEROKU_API_KEY" | docker login -u _ --password-stdin registry.heroku.com
-            heroku container:login
-            heroku container:push web -a strangefront
-            heroku container:release web -a strangefront
+      - heroku/deploy-via-git:
+          app: strangefront
+          requires:
+            - build
 
-      - run:
-          name: Deploy Backend to Heroku
-          command: |
-            echo "$HEROKU_API_KEY" | docker login -u _ --password-stdin registry.heroku.com
-            heroku container:login
-            heroku container:push web -a strangeback
-            heroku container:release web -a strangeback
-
-workflows:
-  version: 2
-  build-and-deploy:
-    jobs:
-      - build
-      - deploy:
+      - heroku/deploy-via-git:
+          app: strangeback
           requires:
             - build

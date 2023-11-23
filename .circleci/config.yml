@@ -28,9 +28,9 @@ jobs:
           command: |
             cd Backend
 
-            # Install pip for Python 3
-            apt-get update
-            apt-get install -y python3-pip
+            # Install pip for Python 3 using sudo
+            sudo apt-get update
+            sudo apt-get install -y python3-pip
 
             # Now, install the requirements
             pip3 install -r requirements.txt

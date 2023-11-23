@@ -36,31 +36,31 @@ jobs:
             pip3 install -r requirements.txt
 
   deploy:
-  docker:
-    - image: docker:19.03.1  # Docker image for deployment
+    docker:
+      - image: docker:19.03.1  # Docker image for deployment
 
-  steps:
-    - checkout
+    steps:
+      - checkout
 
-    - setup_remote_docker
+      - setup_remote_docker
 
-    # Deploy Frontend to Herokuu
-    - run:
-        name: Deploy Frontend
-        command: |
-          echo "$HEROKU_API_KEY" | docker login -u "$HEROKU_USERNAME" --password-stdin registry.heroku.com
-          docker build -t registry.heroku.com/strangefront/web Frontend
-          docker push registry.heroku.com/strangefront/web
-          heroku container:release web -a strangefront
+      # Deploy Frontend to Herokuu
+      - run:
+          name: Deploy Frontend
+          command: |
+            echo "$HEROKU_API_KEY" | docker login -u "$HEROKU_USERNAME" --password-stdin registry.heroku.com
+            docker build -t registry.heroku.com/strangefront/web Frontend
+            docker push registry.heroku.com/strangefront/web
+            heroku container:release web -a strangefront
 
-    # Deploy Backend to Heroku 
-    - run:
-        name: Deploy Backend
-        command: |
-          echo "$HEROKU_API_KEY" | docker login -u "$HEROKU_USERNAME" --password-stdin registry.heroku.com
-          docker build -t registry.heroku.com/strangeback/web Backend
-          docker push registry.heroku.com/strangeback/web
-          heroku container:release web -a strangeback
+      # Deploy Backend to Heroku 
+      - run:
+          name: Deploy Backend
+          command: |
+            echo "$HEROKU_API_KEY" | docker login -u "$HEROKU_USERNAME" --password-stdin registry.heroku.com
+            docker build -t registry.heroku.com/strangeback/web Backend
+            docker push registry.heroku.com/strangeback/web
+            heroku container:release web -a strangeback
 
 
 workflows:

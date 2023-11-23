@@ -47,9 +47,9 @@ jobs:
           command: |
             echo "$HEROKU_API_KEY" | docker login -u _ --password-stdin registry.heroku.com
             heroku container:login
-            docker build -t registry.heroku.com/strangefront/web Frontend
-            docker push registry.heroku.com/strangefront/web
+            heroku container:push web -a strangefront
             heroku container:release web -a strangefront
+
 
       - run:
           name: Deploy Backend to Heroku

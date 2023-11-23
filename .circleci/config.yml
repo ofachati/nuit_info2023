@@ -44,7 +44,7 @@ jobs:
 
     - setup_remote_docker
 
-    # Deploy Frontend to Heroku
+    # Deploy Frontend to Herokuu
     - run:
         name: Deploy Frontend
         command: |
@@ -53,7 +53,7 @@ jobs:
           docker push registry.heroku.com/strangefront/web
           heroku container:release web -a strangefront
 
-    # Deploy Backend to Heroku
+    # Deploy Backend to Heroku 
     - run:
         name: Deploy Backend
         command: |

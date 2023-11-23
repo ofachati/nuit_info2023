@@ -34,6 +34,7 @@ jobs:
 
             # Now, install the requirements
             pip3 install -r requirements.txt
+
   deploy:
     docker:
       - image: docker:19.03.1  # Docker image for deployment
@@ -41,28 +42,21 @@ jobs:
     steps:
       - checkout
 
-      - setup_remote_docker
-
-      # Deploy Frontend to Heroku
       - run:
-          name: Deploy Frontend
+          name: Deploy Frontend to Heroku
           command: |
             echo "$HEROKU_API_KEY" | docker login -u "$HEROKU_USERNAME" --password-stdin registry.heroku.com
             docker build -t registry.heroku.com/strangefront/web Frontend
             docker push registry.heroku.com/strangefront/web
-            HEROKU_API_KEY=$HEROKU_API_KEY heroku container:release web -a strangefront
+            heroku container:release web -a strangefront
 
-
-      # Deploy Backend to Heroku
       - run:
-          name: Deploy Backend
+          name: Deploy Backend to Heroku
           command: |
-            docker login -u "$HEROKU_USERNAME" -p "$HEROKU_API_KEY" registry.heroku.com
+            echo "$HEROKU_API_KEY" | docker login -u "$HEROKU_USERNAME" --password-stdin registry.heroku.com
             docker build -t registry.heroku.com/strangeback/web Backend
             docker push registry.heroku.com/strangeback/web
             heroku container:release web -a strangeback
-
-
 
 workflows:
   version: 2

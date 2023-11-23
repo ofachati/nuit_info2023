@@ -3,26 +3,64 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: circleci/python:3.9
+      - image: circleci/node:14  # Node.js image for building Angular app
+      - image: circleci/python:3.9  # Python image for building FastAPI app
 
     steps:
       - checkout
 
+      # Frontend Build
       - run:
-          name: Create working directory
-          command: mkdir -p ~/app
-
-      - run:
-          name: Build and push Docker image
+          name: Install Frontend Dependencies
           command: |
-            cd ~/app
-            docker build -t registry.heroku.com/strrange/web:latest .
-            docker login -u $HEROKU_REGISTRY_USER -p $HEROKU_API_KEY registry.heroku.com
-            docker push registry.heroku.com/strrange/web
+            cd Frontend
+            npm install
 
+      - run:
+          name: Build Frontend
+          command: |
+            cd Frontend
+            npm run build
 
+      # Backend Build
+      - run:
+          name: Install Backend Dependencies
+          command: |
+            cd Backend
+            pip install -r requirements.txt
+
+  deploy:
+    docker:
+      - image: docker:19.03.1  # Docker image for deployment
+
+    steps:
+      - checkout
+
+      - setup_remote_docker
+
+      # Deploy Frontend to Heroku
+      - run:
+          name: Deploy Frontend
+          command: |
+            docker login -u $HEROKU_USERNAME -p $HEROKU_API_KEY registry.heroku.com
+            docker build -t registry.heroku.com/strangefront/web Frontend
+            docker push registry.heroku.com/strangefront/web
+            heroku container:release web -a strangefront
+
+      # Deploy Backend to Heroku
+      - run:
+          name: Deploy Backend
+          command: |
+            docker login -u $HEROKU_USERNAME -p $HEROKU_API_KEY registry.heroku.com
+            docker build -t registry.heroku.com/strangeback/web Backend
+            docker push registry.heroku.com/strangeback/web
+            heroku container:release web -a strangeback
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - build
       - deploy:
-          name: Deploy to Heroku
-          command: |
-            curl https://cli-assets.heroku.com/install.sh | sh
-            heroku container:release web -a strrange
+          requires:
+            - build

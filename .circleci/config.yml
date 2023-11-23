@@ -43,6 +43,11 @@ jobs:
       - checkout
 
       - run:
+          name: Install Heroku CLI
+          command: |
+            curl https://cli-assets.heroku.com/install.sh | sh
+
+      - run:
           name: Deploy Frontend to Heroku
           command: |
             heroku container:login
@@ -55,7 +60,7 @@ jobs:
             heroku container:login
             heroku container:push web -a strangeback
             heroku container:release web -a strangeback
-
+            
 workflows:
   build-and-deploy:
     jobs:

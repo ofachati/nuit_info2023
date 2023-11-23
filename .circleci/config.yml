@@ -28,11 +28,12 @@ jobs:
           command: |
             cd Backend
 
-            # Add this line to export the PATH with the location of pip
-            export PATH=$PATH:/usr/local/bin
+            # Install pip for Python 3
+            apt-get update
+            apt-get install -y python3-pip
 
-            # Now, install the requirements using the Python module
-            python3 -m pip install -r requirements.txt
+            # Now, install the requirements
+            pip3 install -r requirements.txt
 
   deploy:
     docker:
